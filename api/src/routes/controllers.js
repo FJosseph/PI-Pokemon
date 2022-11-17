@@ -33,12 +33,15 @@ const getName = async (name)=>{
 }
 
 const getDetail = async (id)=>{
+    const regex = /[a-z]/i
+    const result = regex.test(id)
+    if(result){
+        const resultDB = await Pokemon.findOne({where: {id}, include: Tipo})
+        console.log(resultDB);
+        if(resultDB)return resultDB.dataValues
+        throw new Error('No existe el pokemon')
+    }
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    // if(!response){
-    //     const resultDB = await Pokemon.findOne({where: {id}, include: Tipo})
-    //     console.log(resultDB);
-    //     // if(resultDB)return resultDB.dataValues
-    // }
     return {
         id: response.data.id,
         name: response.data.name,
